@@ -1,4 +1,4 @@
-package com.nhnacademy.game;
+package com.nhnacademy.game.world;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -8,13 +8,16 @@ import java.util.Objects;
 import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.nhnacademy.game.ball.Ball;
+import com.nhnacademy.game.ball.MovableBall;
+import com.nhnacademy.game.ball.PaintableBall;
 import com.nhnacademy.game.exception.AlreadyExistException;
 import com.nhnacademy.game.exception.OutOfBoundsException;
 
 public class World extends JPanel {
 
-    List<Ball> ballList = new ArrayList<>();
-    static Logger logger = LoggerFactory.getLogger(World.class);
+    protected List<Ball> ballList = new ArrayList<>();
+    private static Logger logger = LoggerFactory.getLogger(World.class);
 
     public void add(Ball ball) throws AlreadyExistException, OutOfBoundsException {
         if (Objects.isNull(ball)) {
@@ -32,7 +35,7 @@ public class World extends JPanel {
         }
 
         ballList.add(ball);
-        logger.info("ball 추가 : " + ball.toString());
+        logger.info("ball 추가 : {}", ball);
     }
 
     public void remove(Ball ball) {
@@ -45,7 +48,7 @@ public class World extends JPanel {
         }
 
         ballList.remove(ball);
-        logger.info("ball 삭제 : " + ball.toString());
+        logger.info("ball 삭제 : {}", ball);
     }
 
     public void remove(int index) {
@@ -56,7 +59,7 @@ public class World extends JPanel {
         Ball temp = ballList.get(index);
 
         ballList.remove(temp);
-        logger.info("ball 삭제 : " + temp.toString());
+        logger.info("ball 삭제 : {}", temp);
     }
 
     public int getBallCount() {
@@ -73,8 +76,11 @@ public class World extends JPanel {
 
     @Override
     public void paint(Graphics g) {
+        super.paint(g);
+
         for (Ball ball : ballList) {
-            if (ball.getClass().equals(PaintableBall.class)) {
+            if (ball.getClass().equals(PaintableBall.class)
+                    || ball.getClass().equals(MovableBall.class)) {
                 ((PaintableBall) ball).paint(g);
             }
         }

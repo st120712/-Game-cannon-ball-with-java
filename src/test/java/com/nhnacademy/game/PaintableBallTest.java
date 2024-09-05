@@ -5,6 +5,7 @@ import java.awt.Color;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import com.nhnacademy.game.ball.PaintableBall;
 
 public class PaintableBallTest {
 
@@ -34,6 +35,6 @@ public class PaintableBallTest {
 
     @Test
     void testToString() {
-        assertEquals("[(10,10), 1, " + Color.blue + "]", ball.toString());
+        assertEquals("[" + ball.getId() + ", (10,10), 1, " + Color.blue + "]", ball.toString());
     }
 }

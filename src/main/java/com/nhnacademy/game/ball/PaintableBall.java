@@ -1,8 +1,9 @@
-package com.nhnacademy.game;
+package com.nhnacademy.game.ball;
 
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.Objects;
+import java.util.UUID;
 
 public class PaintableBall extends Ball {
     static final Color DEFAULT_COLOR = Color.black;
@@ -12,12 +13,33 @@ public class PaintableBall extends Ball {
     public PaintableBall(int x, int y, int radius, Color color) {
         super(x, y, radius);
 
-        this.color = color;
+        setColor(color);
+    }
+
+    public PaintableBall(UUID id, int x, int y, int radius, Color color) {
+        super(id, x, y, radius);
+
+        setColor(color);
+    }
+
+    public PaintableBall(String id, int x, int y, int radius, Color color) {
+        super(id, x, y, radius);
+
+        setColor(color);
     }
 
     public PaintableBall(int x, int y, int radius) {
         this(x, y, radius, DEFAULT_COLOR);
     }
+
+    public PaintableBall(UUID id, int x, int y, int radius) {
+        this(id, x, y, radius, DEFAULT_COLOR);
+    }
+
+    public PaintableBall(String id, int x, int y, int radius) {
+        this(id, x, y, radius, DEFAULT_COLOR);
+    }
+
 
     public Color getColor() {
         return color;
@@ -28,6 +50,7 @@ public class PaintableBall extends Ball {
     }
 
     public void paint(Graphics g) {
+
         if (Objects.isNull(g)) {
             throw new NullPointerException();
         }
@@ -38,6 +61,7 @@ public class PaintableBall extends Ball {
 
     @Override
     public String toString() {
-        return "[(" + getX() + "," + getY() + ")" + ", " + getRadius() + ", " + getColor() + "]";
+        return String.format("[%s, (%d,%d), %d, %s]", getId(), getX(), getY(), getRadius(),
+                getColor().toString());
     }
 }

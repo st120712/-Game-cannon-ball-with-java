@@ -3,6 +3,9 @@ package com.nhnacademy.game;
 import java.awt.Color;
 import java.util.Random;
 import javax.swing.JFrame;
+import com.nhnacademy.game.ball.MovableBall;
+import com.nhnacademy.game.world.MovableWorld;
+import com.nhnacademy.game.world.World;
 
 public class Main {
     static final Color[] COLORS =
@@ -14,8 +17,8 @@ public class Main {
     public static void main(String[] args) {
 
         JFrame frame = new JFrame();
-        World world = new World();
         Random rand = new Random();
+        World world = new MovableWorld(rand.nextInt(30));
 
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         frame.add(world);
@@ -27,11 +30,12 @@ public class Main {
             int y = radius + rand.nextInt(FRAME_HEIGHT - 2 * radius);
 
             try {
-                world.add(new PaintableBall(x, y, radius, COLORS[rand.nextInt(COLORS.length)]));
+                world.add(new MovableBall(x, y, radius, COLORS[rand.nextInt(COLORS.length)]));
             } catch (Exception e) {
             }
         }
 
         world.paint(frame.getGraphics());
+        ((MovableWorld) world).run();
     }
 }

@@ -1,4 +1,4 @@
-package com.nhnacademy.game;
+package com.nhnacademy.game.ball;
 
 import java.util.UUID;
 import com.nhnacademy.game.exception.InvalidSizeException;
@@ -11,7 +11,7 @@ public class Ball {
     protected final UUID id;
     protected String name;
 
-    Ball(UUID id, int x, int y, int radius) {
+    public Ball(UUID id, int x, int y, int radius) {
 
         if (radius < 0) {
             throw new InvalidSizeException("공의 반지름이 0보다 커야합니다.");
@@ -29,11 +29,11 @@ public class Ball {
         this.radius = radius;
     }
 
-    Ball(int x, int y, int radius) {
+    public Ball(int x, int y, int radius) {
         this(UUID.randomUUID(), x, y, radius);
     }
 
-    Ball(String id, int x, int y, int radius) {
+    public Ball(String id, int x, int y, int radius) {
         this(UUID.fromString(id), x, y, radius);
     }
 

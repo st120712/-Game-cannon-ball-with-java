@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.nhnacademy.game.ball.Ball;
 import com.nhnacademy.game.exception.InvalidSizeException;
 import com.nhnacademy.game.exception.OutOfBoundsException;
 
