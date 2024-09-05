@@ -1,63 +1,67 @@
 package com.nhnacademy.game;
 
-package com.nhnacademy.game;
+import com.nhnacademy.game.exception.InvalidSizeException;
+import com.nhnacademy.game.exception.OutOfBoundsException;
 
 public class Ball {
-    /**
-     * ball의 X축상에서의 위치
-     */
-    // 코드 추가
+    protected int x;
+    protected int y;
+    protected final int radius;
 
-    /**
-     * ball의 Y축상에서의 위치
-     */
-    // 코드 추가
+    Ball(int x, int y, int radius) {
 
-    /**
-     * ball의 반지름
-     */
-    // 코드 추가
+        if (x + radius > Integer.MAX_VALUE || y + radius > Integer.MAX_VALUE
+                || x - radius < Integer.MIN_VALUE || y - radius < Integer.MIN_VALUE) {
+            throw new OutOfBoundsException("공의 크기가 너무 큽니다.");
+        }
 
-    /**
-     * ball 인스턴스를 생성하고, 주어진 값으로 초기화한다.
-     *
-     * @param x      ball의 X축상에서의 위치 설정값
-     * @param y      ball의 Y축상에서의 위치 설정값
-     * @param radius ball의 반지름 설정값
-     */
-    public Ball(int x, int y, int radius) {
-        // 코드 추가
+        if (radius < 0) {
+            throw new InvalidSizeException("공의 반지름이 0보다 커야합니다.");
+        }
+
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
     }
 
-    /**
-     *
-     * @return ball의 X축상에서의 좌표를 반환한다.
-     */
     public int getX() {
-        // 코드 추가
+        return x;
     }
 
-    /**
-     *
-     * @return ball의 Y축상에서의 좌표를 반환한다.
-     */
     public int getY() {
-        // 코드 추가
+        return y;
     }
 
-    /**
-     *
-     * @return ball의 반지름을 반환한다.
-     */
     public int getRadius() {
-        // 코드 추가
+        return radius;
     }
 
-    /**
-     * @return ball의 정보를 문자열로 변환해 반환한다.
-     */
+    public int getMinX() {
+        return x - radius;
+    }
+
+    public int getMinY() {
+        return y - radius;
+    }
+
+    public int getMaxX() {
+        return x + radius;
+    }
+
+    public int getMaxY() {
+        return y + radius;
+    }
+
+    public int getWidth() {
+        return 2 * radius;
+    }
+
+    public int getHeight() {
+        return 2 * radius;
+    }
+
     @Override
     public String toString() {
-        // 코드 추가
+        return "[(" + getX() + "," + getY() + ")" + ", " + getRadius() + "]";
     }
 }
