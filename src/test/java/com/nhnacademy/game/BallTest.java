@@ -42,7 +42,7 @@ public class BallTest {
         try {
             Ball ball = new Ball(Integer.MIN_VALUE, 0, 1);
         } catch (Exception e) {
-            assertTrue(e.getClass().isInstance(OutOfBoundsException.class));
+            assertEquals(OutOfBoundsException.class, e.getClass());
         }
 
         try {
