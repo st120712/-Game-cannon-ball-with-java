@@ -125,6 +125,6 @@ public class BallTest {
 
     @Test
     void testToString() {
-        assertEquals("[(10,30), 5]", ball1.toString());
+        assertEquals("[" + ball1.getId() + ", (10,30), 5]", ball1.toString());
     }
 }

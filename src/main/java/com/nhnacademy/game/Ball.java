@@ -1,5 +1,6 @@
 package com.nhnacademy.game;
 
+import java.util.UUID;
 import com.nhnacademy.game.exception.InvalidSizeException;
 import com.nhnacademy.game.exception.OutOfBoundsException;
 
@@ -7,8 +8,10 @@ public class Ball {
     protected int x;
     protected int y;
     protected final int radius;
+    protected final UUID id;
+    protected String name;
 
-    Ball(int x, int y, int radius) {
+    Ball(UUID id, int x, int y, int radius) {
 
         if (radius < 0) {
             throw new InvalidSizeException("공의 반지름이 0보다 커야합니다.");
@@ -19,9 +22,19 @@ public class Ball {
             throw new OutOfBoundsException("공의 크기가 너무 큽니다.");
         }
 
+        this.id = id;
+        this.name = id.toString();
         this.x = x;
         this.y = y;
         this.radius = radius;
+    }
+
+    Ball(int x, int y, int radius) {
+        this(UUID.randomUUID(), x, y, radius);
+    }
+
+    Ball(String id, int x, int y, int radius) {
+        this(UUID.fromString(id), x, y, radius);
     }
 
     public int getX() {
@@ -60,8 +73,20 @@ public class Ball {
         return 2 * radius;
     }
 
+    public String getId() {
+        return id.toString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return "[(" + getX() + "," + getY() + ")" + ", " + getRadius() + "]";
+        return String.format("[%s, (%d,%d), %d]", getId(), getX(), getY(), getRadius());
     }
 }
