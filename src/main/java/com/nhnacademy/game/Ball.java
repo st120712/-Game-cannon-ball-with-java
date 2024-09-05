@@ -10,13 +10,13 @@ public class Ball {
 
     Ball(int x, int y, int radius) {
 
-        if (x + radius > Integer.MAX_VALUE || y + radius > Integer.MAX_VALUE
-                || x - radius < Integer.MIN_VALUE || y - radius < Integer.MIN_VALUE) {
-            throw new OutOfBoundsException("공의 크기가 너무 큽니다.");
-        }
-
         if (radius < 0) {
             throw new InvalidSizeException("공의 반지름이 0보다 커야합니다.");
+        }
+
+        if (x > Integer.MAX_VALUE - radius || y > Integer.MAX_VALUE - radius
+                || x < Integer.MIN_VALUE + radius || y < Integer.MIN_VALUE + radius) {
+            throw new OutOfBoundsException("공의 크기가 너무 큽니다.");
         }
 
         this.x = x;
