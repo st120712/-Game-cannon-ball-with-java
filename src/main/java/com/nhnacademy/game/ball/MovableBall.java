@@ -45,7 +45,7 @@ public class MovableBall extends PaintableBall {
     }
 
     public void setDX(int dx) {
-        if (dx < 10 || dx > 30) {
+        if (Math.abs(dx) < 5 || Math.abs(dx) > 30) {
             throw new IllegalArgumentException();
         }
 
@@ -54,7 +54,9 @@ public class MovableBall extends PaintableBall {
     }
 
     public void setDY(int dy) {
-        if (dy < 10 || dy > 30) {
+
+
+        if (Math.abs(dy) < 5 || Math.abs(dy) > 30) {
             throw new IllegalArgumentException();
         }
 
@@ -67,16 +69,13 @@ public class MovableBall extends PaintableBall {
             throw new OutOfBoundsException();
         }
 
-        this.x += dx;
-        this.y += dy;
-        logger.info("({}, {}) 이동, 현재 좌표 : ({}, {})", getDX(), getDY(), getX(), getY());
-        logger.trace("start");
+        moveTo(this.x + dx, this.y + dy);
     }
 
     public void moveTo(int x, int y) {
         this.x = x;
         this.y = y;
-        logger.info("({}, {})로 이동", getX(), getY());
+        logger.info("({}, {}) 이동, 현재 좌표 : ({}, {})", getDX(), getDY(), getX(), getY());
     }
 
 

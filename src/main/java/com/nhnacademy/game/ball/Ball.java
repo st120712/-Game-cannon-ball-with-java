@@ -50,19 +50,19 @@ public class Ball {
     }
 
     public int getMinX() {
-        return x - radius;
+        return x;
     }
 
     public int getMinY() {
-        return y - radius;
+        return y;
     }
 
     public int getMaxX() {
-        return x + radius;
+        return x + 2 * radius;
     }
 
     public int getMaxY() {
-        return y + radius;
+        return y + 2 * radius;
     }
 
     public int getWidth() {

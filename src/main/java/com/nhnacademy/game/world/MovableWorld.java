@@ -3,12 +3,13 @@ package com.nhnacademy.game.world;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.nhnacademy.game.ball.Ball;
+import com.nhnacademy.game.ball.BoundedBall;
 import com.nhnacademy.game.ball.MovableBall;
 
 public class MovableWorld extends World {
     protected int moveCount = 0;
     protected int maxMoveCount;
-    protected int dt = 100;
+    protected int dt = 10;
 
     private static final Logger logger = LoggerFactory.getLogger(MovableWorld.class);
 
@@ -58,6 +59,10 @@ public class MovableWorld extends World {
         for (Ball ball : ballList) {
             if (ball.getClass().equals(MovableBall.class)) {
                 ((MovableBall) ball).move();
+            }
+
+            if (ball.getClass().equals(BoundedBall.class)) {
+                ((BoundedBall) ball).move();
             }
         }
 

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.nhnacademy.game.ball.Ball;
+import com.nhnacademy.game.ball.BoundedBall;
 import com.nhnacademy.game.ball.MovableBall;
 import com.nhnacademy.game.ball.PaintableBall;
 import com.nhnacademy.game.exception.AlreadyExistException;
@@ -19,9 +20,9 @@ public class World extends JPanel {
     protected List<Ball> ballList = new ArrayList<>();
     private static Logger logger = LoggerFactory.getLogger(World.class);
 
-    public void add(Ball ball) throws AlreadyExistException, OutOfBoundsException {
+    public void add(Ball ball) {
         if (Objects.isNull(ball)) {
-            throw new NullPointerException();
+            throw new NullPointerException("ball : null입니다.");
         }
 
         if (ballList.contains(ball)) {
@@ -80,7 +81,8 @@ public class World extends JPanel {
 
         for (Ball ball : ballList) {
             if (ball.getClass().equals(PaintableBall.class)
-                    || ball.getClass().equals(MovableBall.class)) {
+                    || ball.getClass().equals(MovableBall.class)
+                    || ball.getClass().equals(BoundedBall.class)) {
                 ((PaintableBall) ball).paint(g);
             }
         }
