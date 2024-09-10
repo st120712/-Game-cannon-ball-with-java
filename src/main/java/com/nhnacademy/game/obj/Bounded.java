@@ -3,7 +3,7 @@ package com.nhnacademy.game.obj;
 import java.awt.Rectangle;
 
 public interface Bounded {
-    public Rectangle getBounds();
+    public Rectangle getBoundedArea();
 
-    public void setBounds(Rectangle bounds);
+    public void setBoundedArea(Rectangle bounds);
 }

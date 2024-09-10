@@ -9,60 +9,61 @@ import com.nhnacademy.game.exception.OutOfBoundsException;
 import com.nhnacademy.game.obj.Bounded;
 
 public class BoundedBall extends MovableBall implements Bounded {
-    private Rectangle bounds;
+    private Rectangle boundedArea;
+
     private static final Logger logger = LoggerFactory.getLogger(BoundedBall.class);
 
     public BoundedBall(Rectangle bounds) {
         super(bounds);
-        setInitBounds(bounds);
+        setInitBoundedArea(boundedArea);
     }
 
     public BoundedBall(Rectangle bounds, Color color) {
         super(bounds, color);
-        setInitBounds(bounds);
+        setInitBoundedArea(boundedArea);
     }
 
     public BoundedBall(UUID id, Rectangle bounds, Color color) {
         super(id, bounds, color);
-        setInitBounds(bounds);
+        setInitBoundedArea(boundedArea);
     }
 
     public BoundedBall(String id, Rectangle bounds, Color color) {
         super(id, bounds, color);
-        setInitBounds(bounds);
+        setInitBoundedArea(boundedArea);
     }
 
     public BoundedBall(UUID id, Rectangle bounds) {
         super(id, bounds);
-        setInitBounds(bounds);
+        setInitBoundedArea(boundedArea);
     }
 
     public BoundedBall(String id, Rectangle bounds) {
         super(id, bounds);
-        setInitBounds(bounds);
+        setInitBoundedArea(boundedArea);
     }
 
-    private void setInitBounds(Rectangle bounds) {
-        setBounds(new Rectangle((int) bounds.getMinX(), (int) bounds.getMinY(),
-                (int) bounds.getWidth(), (int) bounds.getHeight()));
+    private void setInitBoundedArea(Rectangle boundedArea) {
+        setBoundedArea(new Rectangle((int) boundedArea.getMinX(), (int) boundedArea.getMinY(),
+                (int) boundedArea.getWidth(), (int) boundedArea.getHeight()));
     }
 
-    public Rectangle getBounds() {
-        return bounds;
+    public Rectangle getBoundedArea() {
+        return boundedArea;
     }
 
-    public void setBounds(Rectangle bounds) {
-        if (getMinX() < bounds.getMinX() || getMinY() < bounds.getMinY()
-                || getMaxX() > bounds.getMaxX() || getMaxY() > bounds.getMaxY()) {
+    public void setBoundedArea(Rectangle boundedArea) {
+        if (getMinX() < boundedArea.getMinX() || getMinY() < boundedArea.getMinY()
+                || getMaxX() > boundedArea.getMaxX() || getMaxY() > boundedArea.getMaxY()) {
             logger.info(
                     "Ball = minX : {}, minY : {}, maxX : {}, maxY : {} || Boundary = minX : {}, minY : {}, maxX : {}, maxY : {}",
-                    getMinX(), getMinY(), getMaxX(), getMaxY(), bounds.getMinX(), bounds.getMinY(),
-                    bounds.getMaxX(), bounds.getMaxY());
+                    getMinX(), getMinY(), getMaxX(), getMaxY(), boundedArea.getMinX(),
+                    boundedArea.getMinY(), boundedArea.getMaxX(), boundedArea.getMaxY());
 
             throw new IllegalArgumentException();
         }
 
-        this.bounds = bounds;
+        this.boundedArea = boundedArea;
     }
 
     private int[] amountOver() {

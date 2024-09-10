@@ -6,10 +6,9 @@ import org.slf4j.LoggerFactory;
 import com.nhnacademy.game.obj.Boundable;
 import com.nhnacademy.game.obj.Bounded;
 import com.nhnacademy.game.obj.Movable;
-import com.nhnacademy.game.obj.ball.BoundedBall;
 
 
-public class BoundedWorld extends MovableWorld implements Bounded {
+public class BoundedWorld extends MovableWorld {
 
     private static final Logger logger = LoggerFactory.getLogger(BoundedWorld.class);
 
@@ -98,7 +97,7 @@ public class BoundedWorld extends MovableWorld implements Bounded {
             }
 
             if (boundable instanceof Bounded) {
-                ((Bounded) boundable).setBounds(getBounds());
+                ((Bounded) boundable).setBoundedArea(getBounds());
                 ((Movable) boundable).move();
             }
         }
