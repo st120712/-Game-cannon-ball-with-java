@@ -2,10 +2,11 @@ package com.nhnacademy.game;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.awt.Color;
+import java.awt.Rectangle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import com.nhnacademy.game.ball.PaintableBall;
+import com.nhnacademy.game.obj.ball.PaintableBall;
 
 public class PaintableBallTest {
 
@@ -14,7 +15,8 @@ public class PaintableBallTest {
     @BeforeEach
     void setUp() {
         try {
-            ball = new PaintableBall(10, 10, 1, Color.blue);
+
+            ball = new PaintableBall(new Rectangle(10, 10, 2, 2), Color.blue);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -35,6 +37,6 @@ public class PaintableBallTest {
 
     @Test
     void testToString() {
-        assertEquals("[" + ball.getId() + ", (10,10), 1, " + Color.blue + "]", ball.toString());
+        assertEquals("[" + ball.getId() + ", (11,11), 1, " + Color.blue + "]", ball.toString());
     }
 }

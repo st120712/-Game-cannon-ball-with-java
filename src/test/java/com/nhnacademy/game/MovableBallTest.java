@@ -4,11 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.awt.Color;
+import java.awt.Rectangle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import com.nhnacademy.game.ball.MovableBall;
 import com.nhnacademy.game.exception.OutOfBoundsException;
+import com.nhnacademy.game.obj.ball.MovableBall;
 
 public class MovableBallTest {
 
@@ -16,28 +17,29 @@ public class MovableBallTest {
 
     @BeforeEach
     void setUp() {
-        ball = new MovableBall(10, 10, 4, Color.blue);
+        ball = new MovableBall(new Rectangle(10, 10, 8, 8), Color.blue);
+
     }
 
     @Test
     @DisplayName("set dx, dy invalid argument exception test")
     void testSetDXDYInvalidArgumentException() {
         assertThrows(IllegalArgumentException.class, () -> {
-            ball.setDX(0);
+            ball.getMotion().setDx(0);
         });
 
         try {
-            ball.setDX(50);
+            ball.getMotion().setDx(50);
         } catch (Exception e) {
             assertEquals(IllegalArgumentException.class, e.getClass());
         }
 
         assertThrows(IllegalArgumentException.class, () -> {
-            ball.setDY(0);
+            ball.getMotion().setDy(0);
         });
 
         try {
-            ball.setDY(50);
+            ball.getMotion().setDy(50);
         } catch (Exception e) {
             assertEquals(IllegalArgumentException.class, e.getClass());
         }
@@ -62,32 +64,32 @@ public class MovableBallTest {
     @Test
     @DisplayName("get dx test")
     void testGetDX() {
-        assertEquals(10, ball.getDX());
+        assertEquals(10, ball.getMotion().getDx());
 
-        ball.setDX(20);
+        ball.getMotion().setDx(20);
 
-        assertEquals(20, ball.getDX());
+        assertEquals(20, ball.getMotion().getDx());
     }
 
     @Test
     @DisplayName("get dy test")
     void testGetDY() {
-        assertEquals(10, ball.getDY());
+        assertEquals(10, ball.getMotion().getDy());
 
-        ball.setDY(20);
+        ball.getMotion().setDy(20);
 
-        assertEquals(20, ball.getDY());
+        assertEquals(20, ball.getMotion().getDy());
     }
 
     @Test
     void testMove() {
-        ball.setDX(15);
-        ball.setDY(10);
+        ball.getMotion().setDx(15);
+        ball.getMotion().setDy(10);
         ball.move();
 
         assertAll(() -> {
-            assertEquals(25, ball.getX());
-            assertEquals(20, ball.getY());
+            assertEquals(29, ball.getCenterX());
+            assertEquals(24, ball.getCenterY());
         });
     }
 
@@ -96,22 +98,22 @@ public class MovableBallTest {
         ball.moveTo(20, 25);
 
         assertAll(() -> {
-            assertEquals(20, ball.getX());
-            assertEquals(25, ball.getY());
+            assertEquals(24, ball.getCenterX());
+            assertEquals(29, ball.getCenterY());
         });
     }
 
     @Test
     @DisplayName("test set dx")
     void testSetDX() {
-        ball.setDX(15);
-        assertEquals(15, ball.getDX());
+        ball.getMotion().setDx(15);
+        assertEquals(15, ball.getMotion().getDx());
     }
 
     @Test
     @DisplayName("test set dy")
     void testSetDY() {
-        ball.setDY(15);
-        assertEquals(15, ball.getDY());
+        ball.getMotion().setDy(15);
+        assertEquals(15, ball.getMotion().getDy());
     }
 }

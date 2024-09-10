@@ -2,9 +2,8 @@ package com.nhnacademy.game.world;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.nhnacademy.game.ball.Ball;
-import com.nhnacademy.game.ball.BoundedBall;
-import com.nhnacademy.game.ball.MovableBall;
+import com.nhnacademy.game.obj.Boundable;
+import com.nhnacademy.game.obj.Movable;
 
 public class MovableWorld extends World {
     protected int moveCount = 0;
@@ -53,16 +52,12 @@ public class MovableWorld extends World {
         moveCount = 0;
     }
 
-    private void move() {
+    protected void move() {
         repaint();
 
-        for (Ball ball : ballList) {
-            if (ball.getClass().equals(MovableBall.class)) {
-                ((MovableBall) ball).move();
-            }
-
-            if (ball.getClass().equals(BoundedBall.class)) {
-                ((BoundedBall) ball).move();
+        for (Boundable boundable : boundableList) {
+            if (boundable instanceof Movable) {
+                ((Movable) boundable).move();
             }
         }
 
