@@ -26,7 +26,7 @@ public class Main {
 
         JFrame frame = new JFrame();
         Random rand = new Random();
-        World world = new BoundedWorld();
+        BoundedWorld world = new BoundedWorld();
         world.setBackground(Color.black);
 
         frame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -39,9 +39,9 @@ public class Main {
             int y = radius + rand.nextInt(FRAME_HEIGHT - 2 * radius);
 
             try {
-                BoundedBall ball =
-                        new BoundedBall(x, y, radius, COLORS[rand.nextInt(COLORS.length)]);
-                ball.setBoundedArea(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
+                MovableBall ball =
+                        new MovableBall(x, y, radius, COLORS[rand.nextInt(COLORS.length)]);
+                // ball.setBoundedArea(new Rectangle(0, 0, FRAME_WIDTH, FRAME_HEIGHT));
                 ball.setDX(rand.nextInt(3) + 5);
                 ball.setDY(rand.nextInt(5) + 5);
                 world.add(ball);
@@ -52,7 +52,7 @@ public class Main {
 
         world.paint(frame.getGraphics());
         try {
-            ((MovableWorld) world).run();
+            world.run();
         } catch (Exception e) {
             logger.error("RUN {} : {}", e, e.getStackTrace());
         }
