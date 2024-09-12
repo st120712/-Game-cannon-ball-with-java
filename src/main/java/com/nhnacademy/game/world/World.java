@@ -15,6 +15,7 @@ import com.nhnacademy.game.obj.Boundable;
 import com.nhnacademy.game.obj.Paintable;
 
 
+
 public class World extends JPanel {
     public enum Axis {
         AXIS_X, AXIS_Y
@@ -87,8 +88,8 @@ public class World extends JPanel {
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
         for (Boundable boundable : boundableList) {
             if (boundable instanceof Paintable) {

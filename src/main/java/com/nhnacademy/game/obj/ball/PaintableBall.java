@@ -2,6 +2,7 @@ package com.nhnacademy.game.obj.ball;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.util.Objects;
 import java.util.UUID;
 import com.nhnacademy.game.obj.Paintable;
@@ -61,6 +62,11 @@ public class PaintableBall extends Ball implements Paintable {
 
         g.setColor(color);
         g.fillOval(getMinX(), getMinY(), getWidth(), getHeight());
+
+
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.MAGENTA);
+        g2d.draw(bounds);
     }
 
     @Override

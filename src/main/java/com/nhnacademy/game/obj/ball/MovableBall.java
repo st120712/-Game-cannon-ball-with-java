@@ -2,6 +2,7 @@ package com.nhnacademy.game.obj.ball;
 
 import java.awt.Color;
 import java.util.UUID;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.nhnacademy.game.exception.OutOfBoundsException;
@@ -11,6 +12,9 @@ import java.awt.Rectangle;
 
 public class MovableBall extends PaintableBall implements Movable {
     protected PositionalVector motion = new PositionalVector(10, 10);
+    protected int dt = 50;
+    protected boolean isMove = false;
+    protected Thread thread;
 
     private static final Logger logger = LoggerFactory.getLogger(MovableBall.class);
 
@@ -65,8 +69,58 @@ public class MovableBall extends PaintableBall implements Movable {
 
     public void moveTo(int x, int y) {
         bounds.setLocation(x, y);
-        logger.info("({}, {}) 이동, 현재 좌표 : ({}, {})", motion.getDx(), motion.getDy(), getCenterX(),
-                getCenterY());
+        // logger.info("({}, {}) 이동, 현재 좌표 : ({}, {})", motion.getDx(), motion.getDy(),
+        // getCenterX(),
+        // getCenterY());
+    }
+
+    @Override
+    public void run() {
+        isMove = true;
+
+        while (isMove) {
+            long oldTime = System.currentTimeMillis();
+
+            move();
+
+
+            long currentTime = System.currentTimeMillis();
+            try {
+                long tempDt = currentTime - oldTime;
+                if (getDt() > tempDt) {
+                    Thread.sleep(getDt() - tempDt);
+                }
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    @Override
+    public int getDt() {
+        return dt;
+    }
+
+    @Override
+    public void setDt(int dt) {
+        if (dt < 0) {
+            throw new IllegalArgumentException();
+        }
+        this.dt = dt;
+    }
+
+    @Override
+    public void start() {
+        if (Objects.isNull(thread) || !thread.isAlive()) {
+            thread = new Thread(this);
+        }
+
+
+        thread.start();
+    }
+
+    @Override
+    public void stop() {
+        isMove = false;
     }
 
 

@@ -10,6 +10,8 @@ import com.nhnacademy.game.vector.PositionalVector;
 public class MovableTriangle extends PaintableTriangle implements Movable {
 
     protected PositionalVector motion = new PositionalVector(10, 10);
+    protected int dt = 100;
+    protected boolean isMove = false;
 
     public MovableTriangle(Rectangle bounds) {
         super(bounds);
@@ -62,6 +64,37 @@ public class MovableTriangle extends PaintableTriangle implements Movable {
 
     public void moveTo(int x, int y) {
         bounds.setLocation(x, y);
+    }
+
+    @Override
+    public void run() {
+        while (isMove) {
+            try {
+                move();
+                Thread.sleep(dt);
+            } catch (InterruptedException e) {
+            }
+        }
+    }
+
+    @Override
+    public int getDt() {
+        return dt;
+    }
+
+    @Override
+    public void setDt(int dt) {
+        this.dt = dt;
+    }
+
+    @Override
+    public void start() {
+        isMove = true;
+    }
+
+    @Override
+    public void stop() {
+        isMove = false;
     }
 
 }

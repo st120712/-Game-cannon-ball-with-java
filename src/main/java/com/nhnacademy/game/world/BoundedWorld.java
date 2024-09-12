@@ -21,29 +21,28 @@ public class BoundedWorld extends MovableWorld {
         int overY = 0;
 
         if (((Movable) boundable).getMotion().getDx() < 0) {
-            if (boundable.getMinX() + ((Movable) boundable).getMotion().getDx() < getX()) {
-                overX = getX() - (boundable.getMinX() + ((Movable) boundable).getMotion().getDx());
+            if (boundable.getMinX() + ((Movable) boundable).getMotion().getDx() < 0) {
+                overX = (boundable.getMinX() + ((Movable) boundable).getMotion().getDx());
                 ((Movable) boundable).getMotion().turnDx();
+
             }
         } else {
-            if (boundable.getMaxX() + ((Movable) boundable).getMotion().getDx() > getX()
-                    + getWidth()) {
+            if (boundable.getMaxX() + ((Movable) boundable).getMotion().getDx() > getWidth()) {
                 overX = (boundable.getMaxX() + ((Movable) boundable).getMotion().getDx())
-                        - (getX() + getWidth());
+                        - getWidth();
                 ((Movable) boundable).getMotion().turnDx();
             }
         }
 
         if (((Movable) boundable).getMotion().getDy() < 0) {
-            if (boundable.getMinY() + ((Movable) boundable).getMotion().getDy() < getY()) {
-                overY = getY() - (boundable.getMinY() + ((Movable) boundable).getMotion().getDy());
+            if (boundable.getMinY() + ((Movable) boundable).getMotion().getDy() < 0) {
+                overY = (boundable.getMinY() + ((Movable) boundable).getMotion().getDy());
                 ((Movable) boundable).getMotion().turnDy();
             }
         } else {
-            if (boundable.getMaxY() + ((Movable) boundable).getMotion().getDy() > getY()
-                    + getHeight()) {
+            if (boundable.getMaxY() + ((Movable) boundable).getMotion().getDy() > getHeight()) {
                 overY = (boundable.getMaxY() + ((Movable) boundable).getMotion().getDy())
-                        - (getY() + getHeight());
+                        - getHeight();
                 ((Movable) boundable).getMotion().turnDy();
             }
         }
@@ -55,7 +54,7 @@ public class BoundedWorld extends MovableWorld {
 
     @Override
     public void move() {
-        repaint();
+        super.move();
 
         for (Boundable boundable : boundableList) {
             if (boundable instanceof Movable) {
@@ -94,6 +93,8 @@ public class BoundedWorld extends MovableWorld {
                         + ((Movable) boundable).getMotion().getDy() - distance[1];
 
                 ((Movable) boundable).moveTo(x, y);
+
+                ((Movable) boundable).move();
             }
 
             if (boundable instanceof Bounded) {
