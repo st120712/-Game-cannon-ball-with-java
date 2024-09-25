@@ -3,13 +3,15 @@ package com.nhnacademy.game.obj.ball;
 import java.awt.Color;
 import java.awt.Rectangle;
 import java.util.UUID;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.nhnacademy.game.exception.OutOfBoundsException;
+import com.nhnacademy.game.obj.Boundable;
 import com.nhnacademy.game.obj.Bounded;
 
 public class BoundedBall extends MovableBall implements Bounded {
     private Rectangle boundedArea;
+    private List<Boundable> boundableList;
 
     private static final Logger logger = LoggerFactory.getLogger(BoundedBall.class);
 
@@ -66,53 +68,114 @@ public class BoundedBall extends MovableBall implements Bounded {
         this.boundedArea = boundedArea;
     }
 
-    private int[] amountOver() {
-        int overX = 0;
-        int overY = 0;
-
-        if (motion.getDx() < 0) {
-            if (getMinX() + motion.getDx() < bounds.getMinX()) {
-                overX = (int) bounds.getMinX() - (getMinX() + motion.getDx());
-                motion.turnDx();
-            }
-        } else {
-            if (getMaxX() + motion.getDx() > bounds.getMaxX()) {
-                overX = (getMaxX() + motion.getDx()) - (int) bounds.getMaxX();
-                motion.turnDx();
-            }
-        }
-
-        if (motion.getDy() < 0) {
-            if (getMinY() + motion.getDy() < bounds.getMinY()) {
-                overY = (int) bounds.getMinY() - (getMinY() + motion.getDy());
-                motion.turnDy();
-            }
-        } else {
-            if (getMaxY() + motion.getDy() > bounds.getMaxY()) {
-                overY = (getMaxY() + motion.getDy()) - (int) bounds.getMaxY();
-                motion.turnDy();
-            }
-        }
-
-        int[] arr = {overX, overY};
-
-        return arr;
+    public void setBoundableList(List<Boundable> boundableList) {
+        this.boundableList = boundableList;
     }
+
+    private int[] calculateOverlap() {
+        int overX = calculateOverlapX();
+        int overY = calculateOverlapY();
+        return new int[] {overX, overY};
+    }
+
+    private int calculateOverlapX() {
+        int overX = 0;
+        int dx = getMotion().getDx();
+
+        if (dx < 0 && getMinX() + dx < 0) {
+            overX = getMinX() + dx;
+            updateMotion(dx, true);
+
+        } else if (dx > 0 && getMaxX() + dx > boundedArea.getWidth()) {
+            overX = (int) (getMaxX() + dx - boundedArea.getWidth());
+            updateMotion(dx, true);
+
+        }
+
+        return overX;
+    }
+
+    private int calculateOverlapY() {
+        int overY = 0;
+        int dy = getMotion().getDy();
+
+        if (dy < 0 && getMinY() + dy < 0) {
+            overY = getMinY() + dy;
+            updateMotion(dy, false);
+
+        } else if (dy > 0 && getMaxY() + dy > boundedArea.getHeight()) {
+            overY = (int) (getMaxY() + dy - boundedArea.getHeight());
+            updateMotion(dy, false);
+
+        }
+
+        return overY;
+    }
+
+    private void updateMotion(int originalSpeed, boolean isHorizontal) {
+        int newSpeed = (int) (originalSpeed * 0.7);
+
+        if (isHorizontal) {
+            getMotion().setDx(newSpeed);
+            getMotion().turnDx();
+        } else {
+            getMotion().setDy(newSpeed);
+            getMotion().turnDy();
+        }
+    }
+
+
 
     @Override
     public void move() {
-        int[] distance = {0, 0};
+        super.move();
 
-        if (Math.abs(getMinX()) > Integer.MAX_VALUE - Math.abs(motion.getDx())
-                || Math.abs(getMinY()) > Integer.MAX_VALUE - Math.abs(motion.getDy())) {
-            throw new OutOfBoundsException();
+        synchronized (lock) {
+            handleCollisions();
+            updatePosition();
         }
+    }
 
-        distance = amountOver();
+    private void handleCollisions() {
+        for (Boundable other : boundableList) {
+            if (equals(other)) {
+                continue;
+            }
 
-        int x = getCenterX() + motion.getDx() - distance[0];
-        int y = getCenterY() + motion.getDy() - distance[1];
+            if (intersects(other)) {
+                Rectangle intersection = intersection(other);
+                resolveCollision(other, intersection);
+            }
+        }
+    }
 
-        moveTo(x, y);
+    private void resolveCollision(Boundable other, Rectangle intersection) {
+        if (getHeight() == intersection.getHeight()
+                || other.getHeight() == intersection.getHeight()) {
+
+            getMotion().turnDx();
+
+        } else if (getWidth() == intersection.getWidth()
+                || other.getWidth() == intersection.getWidth()) {
+
+            getMotion().turnDy();
+
+        } else {
+            getMotion().turnDx();
+            getMotion().turnDy();
+        }
+    }
+
+    private void updatePosition() {
+        int[] distance = calculateOverlap();
+        if (distance[0] != 0 || distance[1] != 0) {
+            int dx = getMotion().getDx();
+            int dy = getMotion().getDy();
+
+            int newX = getMinX() + dx - distance[0];
+            int newY = getMinY() + dy - distance[1];
+
+            moveTo(newX, newY);
+        }
     }
 }

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import com.nhnacademy.game.effect.Effect;
 import com.nhnacademy.game.obj.Boundable;
 import com.nhnacademy.game.obj.Movable;
+import com.nhnacademy.game.obj.ball.BoundedBall;
 import com.nhnacademy.game.obj.ball.MovableBall;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +73,15 @@ public class MovableWorld extends World implements Runnable {
         }
     }
 
+    public void setMovableBallMotion(int dx, int dy) {
+        for (Boundable boundable : boundableList) {
+            if (boundable instanceof Movable) {
+                ((Movable) boundable).getMotion().setDx(dx);
+                ((Movable) boundable).getMotion().setDy(dy);
+            }
+        }
+    }
+
     public void reset() {
         moveCount = 0;
     }
@@ -117,6 +127,10 @@ public class MovableWorld extends World implements Runnable {
         }
 
         for (Boundable boundable : boundableList) {
+            if (boundable instanceof BoundedBall) {
+                ((BoundedBall) boundable).setBoundableList(boundableList);
+                ((BoundedBall) boundable).setBoundedArea(getBounds());
+            }
             if (boundable instanceof Movable) {
                 ((Movable) boundable).start();
             }

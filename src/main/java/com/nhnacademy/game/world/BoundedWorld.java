@@ -8,7 +8,7 @@ import com.nhnacademy.game.obj.Bounded;
 import com.nhnacademy.game.obj.Movable;
 
 
-public class BoundedWorld extends MovableWorld {
+public class BoundedWorld extends MovableWorld implements Bounded {
 
     private static final Logger logger = LoggerFactory.getLogger(BoundedWorld.class);
 
@@ -73,10 +73,7 @@ public class BoundedWorld extends MovableWorld {
         super.move();
 
         for (Boundable boundable : boundableList) {
-            if (boundable instanceof Bounded) {
-                ((Bounded) boundable).setBoundedArea(getBounds());
-                ((Movable) boundable).move();
-            } else if (boundable instanceof Movable) {
+            if (boundable instanceof Movable) {
                 handleCollisions(boundable);
                 updatePosition(boundable);
             }
@@ -115,8 +112,14 @@ public class BoundedWorld extends MovableWorld {
 
     private void updatePosition(Boundable boundable) {
         int[] distance = calculateOverlap(boundable);
-        int x = boundable.getMinX() + ((Movable) boundable).getMotion().getDx() - distance[0];
-        int y = boundable.getMinY() + ((Movable) boundable).getMotion().getDy() - distance[1];
-        ((Movable) boundable).moveTo(x, y);
+        if (distance[0] != 0 || distance[1] != 0) {
+            int dx = ((Movable) boundable).getMotion().getDx();
+            int dy = ((Movable) boundable).getMotion().getDy();
+
+            int newX = boundable.getMinX() + dx - distance[0];
+            int newY = boundable.getMinY() + dy - distance[1];
+
+            ((Movable) boundable).moveTo(newX, newY);
+        }
     }
 }

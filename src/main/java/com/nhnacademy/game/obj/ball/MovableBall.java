@@ -16,7 +16,7 @@ public class MovableBall extends PaintableBall implements Movable {
     protected int dt = 50;
     protected boolean isMove = false;
     protected Thread thread;
-    private final Object lock = new Object();
+    protected final Object lock = new Object();
 
     private static final Logger logger = LoggerFactory.getLogger(MovableBall.class);
 

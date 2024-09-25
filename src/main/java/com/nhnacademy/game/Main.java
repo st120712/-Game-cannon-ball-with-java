@@ -38,6 +38,9 @@ public class Main {
     static final int BOX_COUNT = 0;
     static final int TRIANGLE_COUNT = 5;
 
+    static final int GRAVITY = 2;
+    static final int WIND = -2;
+
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) {
@@ -49,37 +52,36 @@ public class Main {
         Random rand = new Random();
         BoundedWorld world = new BoundedWorld();
 
-        Effect gravityEffect = new Effect(0, 2);
-        Effect windEffect = new Effect(-2, 0);
+        Effect gravityEffect = new Effect(0, GRAVITY);
+        Effect windEffect = new Effect(WIND, 0);
 
 
         world.setBackground(Color.black);
         world.addEffect(gravityEffect);
         world.addEffect(windEffect);
-        // world.addEffect(new Effect(0, 0));
         world.setBounds(300, 0, 1200, 600);
 
         JLabel velocityLabel = new JLabel("속도");
         velocityLabel.setFont(new Font("velocity", Font.BOLD, 20));
-        JSlider velocitySlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 25);
+        JSlider velocitySlider = new JSlider(JSlider.HORIZONTAL, 0, 30, 15);
         velocitySlider.setPreferredSize(new Dimension(250, 100));
-        velocitySlider.setMinorTickSpacing(5);
-        velocitySlider.setMajorTickSpacing(20);
+        velocitySlider.setMinorTickSpacing(1);
+        velocitySlider.setMajorTickSpacing(5);
         velocitySlider.setPaintTicks(true);
         velocitySlider.setPaintLabels(true);
 
         JLabel angleLabel = new JLabel("각도");
         angleLabel.setFont(new Font("angle", Font.BOLD, 20));
-        JSlider angleSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, 45);
+        JSlider angleSlider = new JSlider(JSlider.HORIZONTAL, 0, 90, 45);
         angleSlider.setPreferredSize(new Dimension(250, 100));
         angleSlider.setMinorTickSpacing(5);
-        angleSlider.setMajorTickSpacing(20);
+        angleSlider.setMajorTickSpacing(10);
         angleSlider.setPaintTicks(true);
         angleSlider.setPaintLabels(true);
 
         JLabel gravityLabel = new JLabel("중력");
         gravityLabel.setFont(new Font("gravity", Font.BOLD, 20));
-        JSlider gravitySlider = new JSlider(JSlider.HORIZONTAL, 0, 10, 2);
+        JSlider gravitySlider = new JSlider(JSlider.HORIZONTAL, 0, 10, GRAVITY);
         gravitySlider.setPreferredSize(new Dimension(250, 100));
         gravitySlider.setMajorTickSpacing(2);
         gravitySlider.setPaintTicks(true);
@@ -87,7 +89,7 @@ public class Main {
 
         JLabel windLabel = new JLabel("바람");
         windLabel.setFont(new Font("wind", Font.BOLD, 20));
-        JSlider windSlider = new JSlider(JSlider.HORIZONTAL, -10, 10, 0);
+        JSlider windSlider = new JSlider(JSlider.HORIZONTAL, -10, 10, WIND);
         windSlider.setPreferredSize(new Dimension(250, 100));
         windSlider.setMajorTickSpacing(2);
         windSlider.setPaintTicks(true);
@@ -110,6 +112,11 @@ public class Main {
             public void actionPerformed(ActionEvent e) {
                 gravityEffect.setDy(gravitySlider.getValue());
                 windEffect.setDx(windSlider.getValue());
+                world.setMovableBallMotion(
+                        (int) (velocitySlider.getValue()
+                                * Math.cos(Math.toRadians(angleSlider.getValue()))),
+                        (int) (velocitySlider.getValue()
+                                * Math.sin(Math.toRadians(angleSlider.getValue()))));
                 world.start();
             }
         };
@@ -167,8 +174,7 @@ public class Main {
             Rectangle bounds = new Rectangle(x, y, 2 * radius, 2 * radius);
 
             try {
-                MovableBall ball = new MovableBall(bounds, COLORS[rand.nextInt(COLORS.length)]);
-                // ball.setBoundedArea(new Rectangle(300, 0, 1200, 700));
+                BoundedBall ball = new BoundedBall(bounds, COLORS[rand.nextInt(COLORS.length)]);
                 ball.getMotion().setDx(rand.nextInt(5) + 5);
                 ball.getMotion().setDy(rand.nextInt(5) + 5);
                 world.add(ball);
