@@ -135,7 +135,7 @@ public class MovableBall extends PaintableBall implements Movable {
 
     public void applyEffect(Effect effect) {
         synchronized (lock) {
-            effect.apply(effect);
+            effect.apply(motion);
         }
     }
 }

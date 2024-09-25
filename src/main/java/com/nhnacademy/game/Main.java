@@ -109,6 +109,7 @@ public class Main {
         ActionListener fireActionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 gravityEffect.setDy(gravitySlider.getValue());
+                windEffect.setDx(windSlider.getValue());
                 world.start();
             }
         };

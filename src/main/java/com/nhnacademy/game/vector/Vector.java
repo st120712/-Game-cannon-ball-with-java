@@ -44,18 +44,18 @@ abstract class Vector {
     public void add(Vector other) {
         setDx(getDx() + other.getDx());
         setDy(getDy() + other.getDy());
-    };
+    }
 
     public void sub(Vector other) {
         setDx(getDx() - other.getDx());
         setDy(getDy() - other.getDy());
-    };
+    }
 
     public void turnDx() {
         setDx(-getDx());
-    };
+    }
 
     public void turnDy() {
         setDy(-getDy());
-    };
+    }
 }

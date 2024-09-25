@@ -28,11 +28,14 @@ public class BoundedWorld extends MovableWorld {
 
         if (dx < 0 && boundable.getMinX() + dx < 0) {
             overX = boundable.getMinX() + dx;
+            updateMotion((Movable) boundable, dx, true);
+
         } else if (dx > 0 && boundable.getMaxX() + dx > getWidth()) {
             overX = boundable.getMaxX() + dx - getWidth();
+            updateMotion((Movable) boundable, dx, true);
+
         }
 
-        updateMotion((Movable) boundable, dx, true);
         return overX;
     }
 
@@ -42,11 +45,14 @@ public class BoundedWorld extends MovableWorld {
 
         if (dy < 0 && boundable.getMinY() + dy < 0) {
             overY = boundable.getMinY() + dy;
-        } else if (dy > 0 && boundable.getMaxY() + dy > getWidth()) {
-            overY = boundable.getMaxY() + dy - getWidth();
+            updateMotion((Movable) boundable, dy, false);
+
+        } else if (dy > 0 && boundable.getMaxY() + dy > getHeight()) {
+            overY = boundable.getMaxY() + dy - getHeight();
+            updateMotion((Movable) boundable, dy, false);
+
         }
 
-        updateMotion((Movable) boundable, dy, false);
         return overY;
     }
 
@@ -112,6 +118,5 @@ public class BoundedWorld extends MovableWorld {
         int x = boundable.getMinX() + ((Movable) boundable).getMotion().getDx() - distance[0];
         int y = boundable.getMinY() + ((Movable) boundable).getMotion().getDy() - distance[1];
         ((Movable) boundable).moveTo(x, y);
-        ((Movable) boundable).move();
     }
 }
