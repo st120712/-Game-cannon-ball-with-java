@@ -18,6 +18,8 @@ public interface Boundable {
 
     public int getMaxY();
 
+    public Rectangle getBounds();
+
     public boolean intersects(Boundable other);
 
     public Rectangle intersection(Boundable other);

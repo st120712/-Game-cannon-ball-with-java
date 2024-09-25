@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import com.nhnacademy.game.effect.Effect;
 import com.nhnacademy.game.obj.Boundable;
 import com.nhnacademy.game.obj.Movable;
+import com.nhnacademy.game.obj.ball.MovableBall;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -61,6 +62,16 @@ public class MovableWorld extends World implements Runnable {
         effects.add(effect);
     }
 
+    public void apllyEffects() {
+        for (Boundable boundable : boundableList) {
+            if (boundable instanceof Movable) {
+                for (Effect effect : effects) {
+                    ((MovableBall) boundable).applyEffect(effect);
+                }
+            }
+        }
+    }
+
     public void reset() {
         moveCount = 0;
     }
@@ -68,26 +79,7 @@ public class MovableWorld extends World implements Runnable {
     protected void move() {
         repaint();
 
-        for (Boundable boundable : boundableList) {
-            if (boundable instanceof Movable) {
-                for (Effect effect : effects) {
-                    if (((Movable) boundable).getMotion().getDx() > 30) {
-                        ((Movable) boundable).getMotion().setDx(rand.nextInt(5) + 5);
-                    }
-
-                    if (((Movable) boundable).getMotion().getDy() > 30) {
-                        ((Movable) boundable).getMotion().setDy(rand.nextInt(5) + 5);
-                    }
-
-                    if (effect.getDx() == 0 && effect.getDy() == 0) {
-                        ((Movable) boundable).getMotion()
-                                .add(new Effect(rand.nextInt(6) - 3, rand.nextInt(6) - 3));
-                    }
-
-                    ((Movable) boundable).getMotion().add(effect);
-                }
-            }
-        }
+        apllyEffects();
 
         moveCount++;
     }
@@ -98,7 +90,7 @@ public class MovableWorld extends World implements Runnable {
 
         long startTime = System.currentTimeMillis();
 
-        logger.info("start");
+        // logger.info("start");
 
         while (isRun) {
             long oldTime = System.currentTimeMillis();
@@ -112,10 +104,11 @@ public class MovableWorld extends World implements Runnable {
                     Thread.sleep(getDT() - tempDt);
                 }
             } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
 
-        logger.info("finished : {}", System.currentTimeMillis() - startTime);
+        // logger.info("finished : {}", System.currentTimeMillis() - startTime);
     }
 
     public void start() {

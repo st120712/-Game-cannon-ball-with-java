@@ -40,6 +40,11 @@ public class Triangle implements Boundable {
     }
 
     @Override
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
+    @Override
     public int getMinX() {
         return (int) bounds.getMinX();
     }
@@ -61,14 +66,12 @@ public class Triangle implements Boundable {
 
     @Override
     public boolean intersects(Boundable other) {
-        return bounds.intersects(new Rectangle(other.getMinX(), other.getMinY(), other.getWidth(),
-                other.getHeight()));
+        return bounds.intersects(other.getBounds());
     }
 
     @Override
     public Rectangle intersection(Boundable other) {
-        return bounds.intersection(new Rectangle(other.getMinX(), other.getMinY(), other.getWidth(),
-                other.getHeight()));
+        return bounds.intersection(other.getBounds());
     }
 
 }

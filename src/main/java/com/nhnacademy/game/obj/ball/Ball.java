@@ -74,6 +74,10 @@ public class Ball implements Boundable {
         return (int) bounds.getHeight();
     }
 
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
     public Point getLocation() {
         return bounds.getLocation();
     }
@@ -90,20 +94,16 @@ public class Ball implements Boundable {
         this.name = name;
     }
 
+    public boolean intersects(Boundable other) {
+        return bounds.intersects(other.getBounds());
+    }
+
+    public Rectangle intersection(Boundable other) {
+        return bounds.intersection(other.getBounds());
+    }
+
     @Override
     public String toString() {
         return String.format("[%s, (%d,%d), %d]", getId(), getCenterX(), getCenterY(), getRadius());
-    }
-
-    @Override
-    public boolean intersects(Boundable other) {
-        return bounds.intersects(new Rectangle(other.getMinX(), other.getMinY(), other.getWidth(),
-                other.getHeight()));
-    }
-
-    @Override
-    public Rectangle intersection(Boundable other) {
-        return bounds.intersection(new Rectangle(other.getMinX(), other.getMinY(), other.getWidth(),
-                other.getHeight()));
     }
 }

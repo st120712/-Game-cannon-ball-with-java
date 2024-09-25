@@ -16,40 +16,50 @@ public class BoundedWorld extends MovableWorld {
         super(0);
     }
 
-    private int[] amountOver(Boundable boundable) {
+    private int[] calculateOverlap(Boundable boundable) {
+        int overX = calculateOverlapX(boundable);
+        int overY = calculateOverlapY(boundable);
+        return new int[] {overX, overY};
+    }
+
+    private int calculateOverlapX(Boundable boundable) {
         int overX = 0;
+        int dx = ((Movable) boundable).getMotion().getDx();
+
+        if (dx < 0 && boundable.getMinX() + dx < 0) {
+            overX = boundable.getMinX() + dx;
+        } else if (dx > 0 && boundable.getMaxX() + dx > getWidth()) {
+            overX = boundable.getMaxX() + dx - getWidth();
+        }
+
+        updateMotion((Movable) boundable, dx, true);
+        return overX;
+    }
+
+    private int calculateOverlapY(Boundable boundable) {
         int overY = 0;
+        int dy = ((Movable) boundable).getMotion().getDy();
 
-        if (((Movable) boundable).getMotion().getDx() < 0) {
-            if (boundable.getMinX() + ((Movable) boundable).getMotion().getDx() < 0) {
-                overX = (boundable.getMinX() + ((Movable) boundable).getMotion().getDx());
-                ((Movable) boundable).getMotion().turnDx();
-
-            }
-        } else {
-            if (boundable.getMaxX() + ((Movable) boundable).getMotion().getDx() > getWidth()) {
-                overX = (boundable.getMaxX() + ((Movable) boundable).getMotion().getDx())
-                        - getWidth();
-                ((Movable) boundable).getMotion().turnDx();
-            }
+        if (dy < 0 && boundable.getMinY() + dy < 0) {
+            overY = boundable.getMinY() + dy;
+        } else if (dy > 0 && boundable.getMaxY() + dy > getWidth()) {
+            overY = boundable.getMaxY() + dy - getWidth();
         }
 
-        if (((Movable) boundable).getMotion().getDy() < 0) {
-            if (boundable.getMinY() + ((Movable) boundable).getMotion().getDy() < 0) {
-                overY = (boundable.getMinY() + ((Movable) boundable).getMotion().getDy());
-                ((Movable) boundable).getMotion().turnDy();
-            }
+        updateMotion((Movable) boundable, dy, false);
+        return overY;
+    }
+
+    private void updateMotion(Movable movable, int originalSpeed, boolean isHorizontal) {
+        int newSpeed = (int) (originalSpeed * 0.7);
+
+        if (isHorizontal) {
+            movable.getMotion().setDx(newSpeed);
+            movable.getMotion().turnDx();
         } else {
-            if (boundable.getMaxY() + ((Movable) boundable).getMotion().getDy() > getHeight()) {
-                overY = (boundable.getMaxY() + ((Movable) boundable).getMotion().getDy())
-                        - getHeight();
-                ((Movable) boundable).getMotion().turnDy();
-            }
+            movable.getMotion().setDy(newSpeed);
+            movable.getMotion().turnDy();
         }
-
-        int[] arr = {overX, overY};
-
-        return arr;
     }
 
     @Override
@@ -57,50 +67,51 @@ public class BoundedWorld extends MovableWorld {
         super.move();
 
         for (Boundable boundable : boundableList) {
-            if (boundable instanceof Movable) {
-
-                for (Boundable otherBoundable : boundableList) {
-                    if (boundable.equals(otherBoundable)) {
-                        continue;
-                    }
-
-                    if (boundable.intersects(otherBoundable)) {
-                        Rectangle inter = boundable.intersection(otherBoundable);
-
-                        if (boundable.getHeight() == inter.getHeight()
-                                || otherBoundable.getHeight() == inter.getHeight()) {
-
-                            ((Movable) boundable).getMotion().turnDx();
-
-                        } else if (boundable.getWidth() == inter.getWidth()
-                                || otherBoundable.getWidth() == inter.getWidth()) {
-
-                            ((Movable) boundable).getMotion().turnDy();
-
-                        } else {
-                            ((Movable) boundable).getMotion().turnDx();
-                            ((Movable) boundable).getMotion().turnDy();
-                        }
-
-                    }
-                }
-
-                int[] distance = amountOver((Boundable) boundable);
-
-                int x = ((Boundable) boundable).getMinX()
-                        + ((Movable) boundable).getMotion().getDx() - distance[0];
-                int y = ((Boundable) boundable).getMinY()
-                        + ((Movable) boundable).getMotion().getDy() - distance[1];
-
-                ((Movable) boundable).moveTo(x, y);
-
-                ((Movable) boundable).move();
-            }
-
             if (boundable instanceof Bounded) {
                 ((Bounded) boundable).setBoundedArea(getBounds());
                 ((Movable) boundable).move();
+            } else if (boundable instanceof Movable) {
+                handleCollisions(boundable);
+                updatePosition(boundable);
             }
         }
+    }
+
+    private void handleCollisions(Boundable boundable) {
+        for (Boundable other : boundableList) {
+            if (boundable.equals(other)) {
+                continue;
+            }
+
+            if (boundable.intersects(other)) {
+                Rectangle intersection = boundable.intersection(other);
+                resolveCollision(boundable, other, intersection);
+            }
+        }
+    }
+
+    private void resolveCollision(Boundable boundable, Boundable other, Rectangle intersection) {
+        if (boundable.getHeight() == intersection.getHeight()
+                || other.getHeight() == intersection.getHeight()) {
+
+            ((Movable) boundable).getMotion().turnDx();
+
+        } else if (boundable.getWidth() == intersection.getWidth()
+                || other.getWidth() == intersection.getWidth()) {
+
+            ((Movable) boundable).getMotion().turnDy();
+
+        } else {
+            ((Movable) boundable).getMotion().turnDx();
+            ((Movable) boundable).getMotion().turnDy();
+        }
+    }
+
+    private void updatePosition(Boundable boundable) {
+        int[] distance = calculateOverlap(boundable);
+        int x = boundable.getMinX() + ((Movable) boundable).getMotion().getDx() - distance[0];
+        int y = boundable.getMinY() + ((Movable) boundable).getMotion().getDy() - distance[1];
+        ((Movable) boundable).moveTo(x, y);
+        ((Movable) boundable).move();
     }
 }

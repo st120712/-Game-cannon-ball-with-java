@@ -15,32 +15,32 @@ public class BoundedBall extends MovableBall implements Bounded {
 
     public BoundedBall(Rectangle bounds) {
         super(bounds);
-        setInitBoundedArea(boundedArea);
+        setInitBoundedArea(bounds);
     }
 
     public BoundedBall(Rectangle bounds, Color color) {
         super(bounds, color);
-        setInitBoundedArea(boundedArea);
+        setInitBoundedArea(bounds);
     }
 
     public BoundedBall(UUID id, Rectangle bounds, Color color) {
         super(id, bounds, color);
-        setInitBoundedArea(boundedArea);
+        setInitBoundedArea(bounds);
     }
 
     public BoundedBall(String id, Rectangle bounds, Color color) {
         super(id, bounds, color);
-        setInitBoundedArea(boundedArea);
+        setInitBoundedArea(bounds);
     }
 
     public BoundedBall(UUID id, Rectangle bounds) {
         super(id, bounds);
-        setInitBoundedArea(boundedArea);
+        setInitBoundedArea(bounds);
     }
 
     public BoundedBall(String id, Rectangle bounds) {
         super(id, bounds);
-        setInitBoundedArea(boundedArea);
+        setInitBoundedArea(bounds);
     }
 
     private void setInitBoundedArea(Rectangle boundedArea) {

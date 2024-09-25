@@ -12,7 +12,6 @@ public class PaintableBall extends Ball implements Paintable {
     static final Color DEFAULT_COLOR = Color.black;
     protected Color color;
 
-
     public PaintableBall(Rectangle bounds, Color color) {
         super(bounds);
 
@@ -62,11 +61,6 @@ public class PaintableBall extends Ball implements Paintable {
 
         g.setColor(color);
         g.fillOval(getMinX(), getMinY(), getWidth(), getHeight());
-
-
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.MAGENTA);
-        g2d.draw(bounds);
     }
 
     @Override
