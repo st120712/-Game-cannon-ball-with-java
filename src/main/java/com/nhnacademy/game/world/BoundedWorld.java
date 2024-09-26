@@ -73,7 +73,9 @@ public class BoundedWorld extends MovableWorld implements Bounded {
         super.move();
 
         for (Boundable boundable : boundableList) {
-            if (boundable instanceof Movable) {
+            if (boundable instanceof Bounded) {
+
+            } else if (boundable instanceof Movable) {
                 handleCollisions(boundable);
                 updatePosition(boundable);
             }

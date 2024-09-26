@@ -31,6 +31,14 @@ public class MovableWorld extends World implements Runnable {
         setMaxMoveCount(maxMoveCount);
     }
 
+    public void removeMovable() {
+        for (Boundable boundable : boundableList) {
+            if (boundable instanceof Movable) {
+                remove(boundable);
+            }
+        }
+    }
+
     public int getMoveCount() {
         return moveCount;
     }
@@ -128,9 +136,12 @@ public class MovableWorld extends World implements Runnable {
 
         for (Boundable boundable : boundableList) {
             if (boundable instanceof BoundedBall) {
-                ((BoundedBall) boundable).setBoundableList(boundableList);
-                ((BoundedBall) boundable).setBoundedArea(getBounds());
+                if (!((BoundedBall) boundable).getBoundedArea().equals(getBounds())) {
+                    ((BoundedBall) boundable).setBoundableList(boundableList);
+                    ((BoundedBall) boundable).setBoundedArea(getBounds());
+                }
             }
+
             if (boundable instanceof Movable) {
                 ((Movable) boundable).start();
             }
