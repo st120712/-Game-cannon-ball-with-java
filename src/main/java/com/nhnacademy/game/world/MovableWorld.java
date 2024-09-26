@@ -7,6 +7,7 @@ import com.nhnacademy.game.obj.Boundable;
 import com.nhnacademy.game.obj.Movable;
 import com.nhnacademy.game.obj.ball.BoundedBall;
 import com.nhnacademy.game.obj.ball.MovableBall;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -65,6 +66,10 @@ public class MovableWorld extends World implements Runnable {
         }
 
         this.dt = dt;
+    }
+
+    public boolean getIsRun() {
+        return isRun;
     }
 
     public void addEffect(Effect effect) {
@@ -136,10 +141,9 @@ public class MovableWorld extends World implements Runnable {
 
         for (Boundable boundable : boundableList) {
             if (boundable instanceof BoundedBall) {
-                if (!((BoundedBall) boundable).getBoundedArea().equals(getBounds())) {
-                    ((BoundedBall) boundable).setBoundableList(boundableList);
-                    ((BoundedBall) boundable).setBoundedArea(getBounds());
-                }
+                ((BoundedBall) boundable).setBoundableList(boundableList);
+                ((BoundedBall) boundable).setBoundedArea(new Rectangle(0, 0,
+                        (int) getBounds().getWidth(), (int) getBounds().getHeight()));
             }
 
             if (boundable instanceof Movable) {

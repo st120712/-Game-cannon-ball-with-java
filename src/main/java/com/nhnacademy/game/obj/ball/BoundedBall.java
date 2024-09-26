@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.nhnacademy.game.exception.OutOfBoundsException;
 import com.nhnacademy.game.obj.Boundable;
 import com.nhnacademy.game.obj.Bounded;
 
@@ -62,7 +63,7 @@ public class BoundedBall extends MovableBall implements Bounded {
                     getMinX(), getMinY(), getMaxX(), getMaxY(), boundedArea.getMinX(),
                     boundedArea.getMinY(), boundedArea.getMaxX(), boundedArea.getMaxY());
 
-            throw new IllegalArgumentException();
+            throw new OutOfBoundsException();
         }
 
         this.boundedArea = boundedArea;

@@ -6,8 +6,8 @@ import com.nhnacademy.game.aaaaaa.MBBW;
 
 public class Main {
     public static void main(String[] args) {
-        // new MBBW();
+        new MBBW();
         // new BBMW();
-        new CannonGame();
+        // new CannonGame();
     }
 }

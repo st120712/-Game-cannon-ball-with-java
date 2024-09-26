@@ -34,10 +34,8 @@ public class World extends JPanel {
             throw new AlreadyExistException();
         }
 
-        if (boundable.getMinX() < getBounds().getMinX()
-                || boundable.getMaxX() > getBounds().getMaxX()
-                || boundable.getMinY() < getBounds().getMinY()
-                || boundable.getMaxY() > getBounds().getMaxY()) {
+        if (boundable.getMinX() < 0 || boundable.getMaxX() > getBounds().getWidth()
+                || boundable.getMinY() < 0 || boundable.getMaxY() > getBounds().getHeight()) {
             throw new OutOfBoundsException();
         }
 

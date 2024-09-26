@@ -1,5 +1,6 @@
 package com.nhnacademy.game.aaaaaa;
 
+import java.util.Random;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -15,6 +16,7 @@ import com.nhnacademy.game.component.TextButton;
 import com.nhnacademy.game.effect.Effect;
 import com.nhnacademy.game.obj.ball.BoundedBall;
 import com.nhnacademy.game.obj.box.PaintableBox;
+import com.nhnacademy.game.vector.PositionalVector;
 import com.nhnacademy.game.world.MovableWorld;
 
 public class CannonGame extends JFrame {
@@ -24,18 +26,35 @@ public class CannonGame extends JFrame {
     static final int WIND = -2;
 
     public CannonGame() {
+        Random rand = new Random();
+        int boxCount = 0;
+
+        // 이펙트 정의
         Effect gravityEffect = new Effect(0, GRAVITY);
         Effect windEffect = new Effect(WIND, 0);
 
+        // world 설정
         MovableWorld world = new MovableWorld();
         world.setBackground(Color.white);
         world.addEffect(gravityEffect);
         world.addEffect(windEffect);
         world.setBounds(300, 0, 1200, 600);
 
-        PaintableBox box = new PaintableBox(new Rectangle(500, 575, 25, 25), Color.GRAY);
-        world.add(box);
+        // 방해물 랜덤 배치
+        int maxBoxCount = rand.nextInt(80, 160);
+        while (boxCount < maxBoxCount) {
+            PaintableBox box = new PaintableBox(
+                    new Rectangle(450 + 25 * rand.nextInt(10), 25 * rand.nextInt(23), 25, 25),
+                    Color.GRAY);
 
+            try {
+                world.add(box);
+                boxCount++;
+            } catch (Exception e) {
+            }
+        }
+
+        // slider 구현
         JLabel velocityLabel = new JLabel("속도");
         velocityLabel.setFont(new Font("velocity", Font.BOLD, 20));
         JSlider velocitySlider = new JSlider(JSlider.HORIZONTAL, 0, 30, 15);
@@ -83,22 +102,25 @@ public class CannonGame extends JFrame {
         totalSliderPanel.add(windLabel);
         totalSliderPanel.add(windSlider);
 
+
+        // 버튼 구현 : thread start
         ActionListener fireActionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                world.removeMovable();
+                if (!world.getIsRun()) {
+                    BoundedBall ball = new BoundedBall(new Rectangle(50, 500, 25, 25), Color.blue);
+                    gravityEffect.setDy(gravitySlider.getValue());
+                    windEffect.setDx(windSlider.getValue());
 
-                BoundedBall ball = new BoundedBall(new Rectangle(50, 550, 50, 50), Color.blue);
-                world.add(ball);
+                    PositionalVector ballMotion = new PositionalVector(
+                            (int) (velocitySlider.getValue()
+                                    * Math.cos(Math.toRadians(angleSlider.getValue()))),
+                            (int) (velocitySlider.getValue()
+                                    * Math.sin(Math.toRadians(angleSlider.getValue()))));
 
-                gravityEffect.setDy(gravitySlider.getValue());
-                windEffect.setDx(windSlider.getValue());
-                world.setMovableBallMotion(
-                        (int) (velocitySlider.getValue()
-                                * Math.cos(Math.toRadians(angleSlider.getValue()))),
-                        (int) (velocitySlider.getValue()
-                                * Math.sin(Math.toRadians(angleSlider.getValue()))));
-
-                world.start();
+                    ball.setMotion(ballMotion);
+                    world.add(ball);
+                    world.start();
+                }
             }
         };
         TextButton fireButton = new TextButton("Fire!", fireActionListener);
@@ -106,7 +128,8 @@ public class CannonGame extends JFrame {
         ActionListener clearActionListener = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 world.removeMovable();
-                world.start();
+                world.repaint();
+                world.stop();
             }
         };
         TextButton clearButton = new TextButton("Clear!", clearActionListener);
@@ -118,17 +141,19 @@ public class CannonGame extends JFrame {
         btnPanel.add(fireButton);
         btnPanel.add(clearButton);
 
+        // jframe에 panel add
         add(totalSliderPanel);
         add(btnPanel);
         add(world);
 
-        setBackground(Color.white);
+        // jframe 설정
         setLocation(500, 1600);
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setLayout(null);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        // paint
         world.paint(world.getGraphics());
     }
 }

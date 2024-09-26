@@ -117,7 +117,6 @@ public class MBBW extends JFrame {
         add(btnPanel);
         add(world);
 
-        setBackground(Color.white);
         setLocation(500, 1600);
         setSize(FRAME_WIDTH, FRAME_HEIGHT);
         setLayout(null);
