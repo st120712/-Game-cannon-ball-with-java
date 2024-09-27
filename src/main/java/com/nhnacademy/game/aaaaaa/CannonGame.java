@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -15,6 +14,7 @@ import javax.swing.JSlider;
 import com.nhnacademy.game.component.TextButton;
 import com.nhnacademy.game.effect.Effect;
 import com.nhnacademy.game.obj.ball.BoundedBall;
+import com.nhnacademy.game.obj.box.BreakableBox;
 import com.nhnacademy.game.obj.box.PaintableBox;
 import com.nhnacademy.game.vector.PositionalVector;
 import com.nhnacademy.game.world.MovableWorld;
@@ -22,12 +22,13 @@ import com.nhnacademy.game.world.MovableWorld;
 public class CannonGame extends JFrame {
     static final int FRAME_WIDTH = 1500;
     static final int FRAME_HEIGHT = 750;
+    static final int TARGET_COUNT = 1;
     static final int GRAVITY = 2;
     static final int WIND = -2;
 
     public CannonGame() {
         Random rand = new Random();
-        int boxCount = 0;
+        int targetCount = 0;
 
         // 이펙트 정의
         Effect gravityEffect = new Effect(0, GRAVITY);
@@ -41,18 +42,30 @@ public class CannonGame extends JFrame {
         world.setBounds(300, 0, 1200, 600);
 
         // 방해물 랜덤 배치
-        int maxBoxCount = rand.nextInt(80, 160);
-        while (boxCount < maxBoxCount) {
-            PaintableBox box = new PaintableBox(
-                    new Rectangle(450 + 25 * rand.nextInt(10), 25 * rand.nextInt(23), 25, 25),
-                    Color.GRAY);
+        int topObstacleHeight = 75 * rand.nextInt(8);
+        PaintableBox topObstacle =
+                new PaintableBox(new Rectangle(450, 0, 250, topObstacleHeight), Color.GRAY);
 
+        PaintableBox bottomObstacle = new PaintableBox(
+                new Rectangle(450, topObstacleHeight + 75, 250, 525 - topObstacleHeight),
+                Color.gray);
+
+        world.add(topObstacle);
+        world.add(bottomObstacle);
+
+        // 목표물 랜덤 배치
+        while (targetCount < TARGET_COUNT) {
+            BreakableBox target = new BreakableBox(
+                    new Rectangle(700 + 100 * rand.nextInt(5), 75 * rand.nextInt(8), 100, 75),
+                    Color.yellow);
             try {
-                world.add(box);
-                boxCount++;
+                world.add(target);
+                targetCount++;
             } catch (Exception e) {
+                System.out.println(e.getClass());
             }
         }
+
 
         // slider 구현
         JLabel velocityLabel = new JLabel("속도");
@@ -104,33 +117,27 @@ public class CannonGame extends JFrame {
 
 
         // 버튼 구현 : thread start
-        ActionListener fireActionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!world.getIsRun()) {
-                    BoundedBall ball = new BoundedBall(new Rectangle(50, 500, 25, 25), Color.blue);
-                    gravityEffect.setDy(gravitySlider.getValue());
-                    windEffect.setDx(windSlider.getValue());
+        ActionListener fireActionListener = e -> {
+            world.removeMovable();
 
-                    PositionalVector ballMotion = new PositionalVector(
-                            (int) (velocitySlider.getValue()
-                                    * Math.cos(Math.toRadians(angleSlider.getValue()))),
-                            (int) (velocitySlider.getValue()
-                                    * Math.sin(Math.toRadians(angleSlider.getValue()))));
+            BoundedBall ball = new BoundedBall(new Rectangle(50, 500, 25, 25), Color.blue);
+            gravityEffect.setDy(gravitySlider.getValue());
+            windEffect.setDx(windSlider.getValue());
 
-                    ball.setMotion(ballMotion);
-                    world.add(ball);
-                    world.start();
-                }
-            }
+            PositionalVector ballMotion = new PositionalVector(
+                    (int) (velocitySlider.getValue()
+                            * Math.cos(Math.toRadians(angleSlider.getValue()))),
+                    -(int) (velocitySlider.getValue()
+                            * Math.sin(Math.toRadians(angleSlider.getValue()))));
+
+            ball.setMotion(ballMotion);
+            world.add(ball);
+            ball.start();
         };
         TextButton fireButton = new TextButton("Fire!", fireActionListener);
 
-        ActionListener clearActionListener = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                world.removeMovable();
-                world.repaint();
-                world.stop();
-            }
+        ActionListener clearActionListener = e -> {
+            world.removeMovable();
         };
         TextButton clearButton = new TextButton("Clear!", clearActionListener);
 
@@ -155,5 +162,8 @@ public class CannonGame extends JFrame {
 
         // paint
         world.paint(world.getGraphics());
+
+        // thread start
+        world.start();
     }
 }

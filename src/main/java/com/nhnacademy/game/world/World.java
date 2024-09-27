@@ -1,8 +1,10 @@
 package com.nhnacademy.game.world;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import javax.swing.JPanel;
@@ -12,7 +14,9 @@ import com.nhnacademy.game.exception.AlreadyExistException;
 import com.nhnacademy.game.exception.DuplicatedBoundsException;
 import com.nhnacademy.game.exception.OutOfBoundsException;
 import com.nhnacademy.game.obj.Boundable;
+import com.nhnacademy.game.obj.Breakable;
 import com.nhnacademy.game.obj.Paintable;
+import com.nhnacademy.game.obj.ball.BoundedBall;
 
 
 
@@ -21,7 +25,7 @@ public class World extends JPanel {
         AXIS_X, AXIS_Y
     }
 
-    protected List<Boundable> boundableList = new ArrayList<>();
+    protected List<Boundable> boundableList = Collections.synchronizedList(new ArrayList<>());
 
     private static Logger logger = LoggerFactory.getLogger(World.class);
 
@@ -43,6 +47,16 @@ public class World extends JPanel {
             if (boundable.intersects(created)) {
                 throw new DuplicatedBoundsException();
             }
+        }
+
+        if (boundable instanceof BoundedBall) {
+            ((BoundedBall) boundable).setBoundableList(boundableList);
+            ((BoundedBall) boundable).setBoundedArea(new Rectangle(0, 0,
+                    (int) getBounds().getWidth(), (int) getBounds().getHeight()));
+        }
+
+        if (boundable instanceof Breakable) {
+            ((Breakable) boundable).setBoundableList(boundableList);
         }
 
         boundableList.add(boundable);

@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.nhnacademy.game.effect.Effect;
 import com.nhnacademy.game.obj.Boundable;
+import com.nhnacademy.game.obj.Breakable;
 import com.nhnacademy.game.obj.Movable;
-import com.nhnacademy.game.obj.ball.BoundedBall;
 import com.nhnacademy.game.obj.ball.MovableBall;
-import java.awt.Rectangle;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Objects;
@@ -33,9 +33,16 @@ public class MovableWorld extends World implements Runnable {
     }
 
     public void removeMovable() {
-        for (Boundable boundable : boundableList) {
-            if (boundable instanceof Movable) {
-                remove(boundable);
+        synchronized (boundableList) {
+            Iterator<Boundable> iterator = boundableList.iterator();
+
+            while (iterator.hasNext()) {
+                Boundable boundable = iterator.next();
+
+                if (boundable instanceof Movable) {
+                    iterator.remove();
+                }
+
             }
         }
     }
@@ -66,10 +73,6 @@ public class MovableWorld extends World implements Runnable {
         }
 
         this.dt = dt;
-    }
-
-    public boolean getIsRun() {
-        return isRun;
     }
 
     public void addEffect(Effect effect) {
@@ -140,14 +143,12 @@ public class MovableWorld extends World implements Runnable {
         }
 
         for (Boundable boundable : boundableList) {
-            if (boundable instanceof BoundedBall) {
-                ((BoundedBall) boundable).setBoundableList(boundableList);
-                ((BoundedBall) boundable).setBoundedArea(new Rectangle(0, 0,
-                        (int) getBounds().getWidth(), (int) getBounds().getHeight()));
-            }
-
             if (boundable instanceof Movable) {
                 ((Movable) boundable).start();
+            }
+
+            if (boundable instanceof Breakable) {
+                ((Breakable) boundable).start();
             }
         }
 
