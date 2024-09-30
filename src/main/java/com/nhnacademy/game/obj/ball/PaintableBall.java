@@ -2,7 +2,6 @@ package com.nhnacademy.game.obj.ball;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.util.Objects;
 import java.util.UUID;
 import com.nhnacademy.game.obj.Paintable;

@@ -18,8 +18,8 @@ public class MovableWorld extends World implements Runnable {
     protected int maxMoveCount;
     protected int dt = 50;
     protected Random rand = new Random();
-    protected List<Effect> effects = new ArrayList<>();
-    protected Thread thread;
+    protected transient List<Effect> effects = new ArrayList<>();
+    protected transient Thread thread;
     protected boolean isRun = false;
 
     private static final Logger logger = LoggerFactory.getLogger(MovableWorld.class);
@@ -32,17 +32,19 @@ public class MovableWorld extends World implements Runnable {
         setMaxMoveCount(maxMoveCount);
     }
 
-    public void removeMovable() {
+    public void removeBoundalbes(Class<?>... types) {
         synchronized (boundableList) {
             Iterator<Boundable> iterator = boundableList.iterator();
 
             while (iterator.hasNext()) {
                 Boundable boundable = iterator.next();
 
-                if (boundable instanceof Movable) {
-                    iterator.remove();
+                for (Class<?> type : types) {
+                    if (type.isInstance(boundable)) {
+                        iterator.remove();
+                        break;
+                    }
                 }
-
             }
         }
     }
@@ -114,10 +116,6 @@ public class MovableWorld extends World implements Runnable {
     public void run() {
         isRun = true;
 
-        long startTime = System.currentTimeMillis();
-
-        // logger.info("start");
-
         while (isRun) {
             long oldTime = System.currentTimeMillis();
 
@@ -133,8 +131,6 @@ public class MovableWorld extends World implements Runnable {
                 Thread.currentThread().interrupt();
             }
         }
-
-        // logger.info("finished : {}", System.currentTimeMillis() - startTime);
     }
 
     public void start() {

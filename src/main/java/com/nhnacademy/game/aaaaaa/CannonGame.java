@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import com.nhnacademy.game.component.TextButton;
 import com.nhnacademy.game.effect.Effect;
+import com.nhnacademy.game.obj.Movable;
+import com.nhnacademy.game.obj.Paintable;
 import com.nhnacademy.game.obj.ball.BoundedBall;
 import com.nhnacademy.game.obj.box.BreakableBox;
 import com.nhnacademy.game.obj.box.PaintableBox;
@@ -26,46 +28,24 @@ public class CannonGame extends JFrame {
     static final int GRAVITY = 2;
     static final int WIND = -2;
 
+    int targetCount = 0;
+    Random rand = new Random();
+    MovableWorld world;
+
     public CannonGame() {
-        Random rand = new Random();
-        int targetCount = 0;
 
         // 이펙트 정의
         Effect gravityEffect = new Effect(0, GRAVITY);
         Effect windEffect = new Effect(WIND, 0);
 
         // world 설정
-        MovableWorld world = new MovableWorld();
+        world = new MovableWorld();
         world.setBackground(Color.white);
         world.addEffect(gravityEffect);
         world.addEffect(windEffect);
         world.setBounds(300, 0, 1200, 600);
 
-        // 방해물 랜덤 배치
-        int topObstacleHeight = 75 * rand.nextInt(8);
-        PaintableBox topObstacle =
-                new PaintableBox(new Rectangle(450, 0, 250, topObstacleHeight), Color.GRAY);
-
-        PaintableBox bottomObstacle = new PaintableBox(
-                new Rectangle(450, topObstacleHeight + 75, 250, 525 - topObstacleHeight),
-                Color.gray);
-
-        world.add(topObstacle);
-        world.add(bottomObstacle);
-
-        // 목표물 랜덤 배치
-        while (targetCount < TARGET_COUNT) {
-            BreakableBox target = new BreakableBox(
-                    new Rectangle(700 + 100 * rand.nextInt(5), 75 * rand.nextInt(8), 100, 75),
-                    Color.yellow);
-            try {
-                world.add(target);
-                targetCount++;
-            } catch (Exception e) {
-                System.out.println(e.getClass());
-            }
-        }
-
+        stageSetting();
 
         // slider 구현
         JLabel velocityLabel = new JLabel("속도");
@@ -118,7 +98,7 @@ public class CannonGame extends JFrame {
 
         // 버튼 구현 : thread start
         ActionListener fireActionListener = e -> {
-            world.removeMovable();
+            world.removeBoundalbes(Movable.class);
 
             BoundedBall ball = new BoundedBall(new Rectangle(50, 500, 25, 25), Color.blue);
             gravityEffect.setDy(gravitySlider.getValue());
@@ -137,7 +117,7 @@ public class CannonGame extends JFrame {
         TextButton fireButton = new TextButton("Fire!", fireActionListener);
 
         ActionListener clearActionListener = e -> {
-            world.removeMovable();
+            world.removeBoundalbes(Movable.class);
         };
         TextButton clearButton = new TextButton("Clear!", clearActionListener);
 
@@ -165,5 +145,33 @@ public class CannonGame extends JFrame {
 
         // thread start
         world.start();
+    }
+
+    public void stageSetting() {
+        world.removeBoundalbes(Paintable.class);
+
+        // 방해물 랜덤 배치
+        int topObstacleHeight = 75 * rand.nextInt(8);
+        PaintableBox topObstacle =
+                new PaintableBox(new Rectangle(450, 0, 250, topObstacleHeight), Color.GRAY);
+
+        PaintableBox bottomObstacle = new PaintableBox(
+                new Rectangle(450, topObstacleHeight + 75, 250, 525 - topObstacleHeight),
+                Color.gray);
+
+        world.add(topObstacle);
+        world.add(bottomObstacle);
+
+        // 목표물 랜덤 배치
+        while (targetCount < TARGET_COUNT) {
+            BreakableBox target = new BreakableBox(
+                    new Rectangle(700 + 100 * rand.nextInt(5), 75 * rand.nextInt(8), 100, 75),
+                    Color.yellow);
+            try {
+                world.add(target);
+                targetCount++;
+            } catch (Exception e) {
+            }
+        }
     }
 }

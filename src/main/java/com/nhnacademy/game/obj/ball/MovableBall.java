@@ -91,8 +91,6 @@ public class MovableBall extends PaintableBall implements Movable {
     public void moveTo(int x, int y) {
         bounds.setLocation(x, y);
         // logger.info("({}, {}) 이동, 현재 좌표 : ({}, {})", motion.getDx(), motion.getDy(),
-        // getCenterX(),
-        // getCenterY());
     }
 
     @Override
